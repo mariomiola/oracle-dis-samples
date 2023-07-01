@@ -1,44 +1,87 @@
-*This repository acts as a template for all of Oracle’s GitHub repositories. It contains information about the guidelines for those repositories. All files and sections contained in this template are mandatory, and a GitHub app ensures alignment with these guidelines. To get started with a new repository, replace the italic paragraphs with the respective text for your project.*
+# terraform-oci-data-integration-services-arch
 
-# Project name
+## Reference Architecture
 
-*Describe your project's features, functionality and target audience*
+This Terraform code creates a workspace in a defined VCN subnet, applied all the necessary policies for the execution against the data assets for OCI Object Store and Oracle ADW. The terraform application also uploads all the DIS Templates task, making the woerkspace readly available to be used.
+## Architecture Diagram 
 
-## Installation
+![](./images/DIS-Reference-Architecture.png)
 
-*Provide detailed step-by-step installation instructions. You can name this section **How to Run** or **Getting Started** instead of **Installation** if that's more acceptable for your project*
+## Prerequisites
 
-## Documentation
+- Permission to `manage` the following types of resources in your Oracle Cloud Infrastructure tenancy: `dis-family`,`buckets`; permission to `read metrics` in the compartment where the DIS workspace will be created. 
+- Quota to create at least 1 DIS Workspace in the tenancy.
+- 
+If you don't have the required permissions and quota, contact your tenancy administrator. See [Policy Reference](https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Reference/policyreference.htm), [Service Limits](https://docs.cloud.oracle.com/en-us/iaas/Content/General/Concepts/servicelimits.htm), [Compartment Quotas](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcequotas.htm).
 
-*Developer-oriented documentation can be published on GitHub, but all product documentation must be published on <https://docs.oracle.com>*
 
-## Examples
+## Deploy Using the Terraform CLI
 
-*Describe any included examples or provide a link to a demo/tutorial*
+### Clone the Module
 
-## Help
+Now, you'll want a local copy of this repo. You can make that with the commands:
 
-*Inform users on where to get help or how to receive official support from Oracle (if applicable)*
+```
+    git clone https://github.com/oracle-devrel/terraform-oci-dataintegration-arch.git
+    cd terraform-oci-dataintegration-arch
+    ls
+```
+
+### Prerequisites
+First off, you'll need to do some pre-deploy setup.  That's all detailed [here](https://github.com/cloud-partners/oci-prerequisites).
+
+Create a `terraform.tfvars` file, and specify at least the following variables:
+
+```
+# Authentication
+tenancy_ocid        = "<tenancy_ocid>"
+user_ocid           = "<user_ocid>"
+fingerprint         = "<finger_print>"
+private_key_path    = "<pem_private_key_path>"
+
+region              = "<oci_region>"
+compartment_ocid    = "<compartment_ocid>"
+
+# IAM Group with permissions to run create the DIS instances
+DISadmingroup = "<DIS Administrator Group>"
+
+# DIS
+workspace_display_name = "<DIS Workspace Display Name>" # Ex: DIS Reference Architecture v0.1"
+workspace_is_private_network_enabled = "true"
+workspace_subnet_id = "<ocid.subnet....>"
+workspace_vcn_id = "<ocid1.vcn....>"
+workspace_project_identifier = "<Project Identifier to save Template Design Artifacts>" # Ex: TEMPLATES_DEVELOPMENT"
+workspace_project_name = "<Project Name>" 
+workspace_project_description = "<Project Descrptiom>" 
+workspace_project_folder_identifier = "<Folder Identifier>" # Ex: REFERENCE_PROJECT_FOLDER
+workspace_project_folder_name = "<Folder Name>" # 
+workspace_project_folder_description = "<Folder Description>" 
+
+### Create the Resources
+Run the following commands:
+
+    terraform init
+    terraform plan
+    terraform apply
+
+### Destroy the Deployment
+When you no longer need the deployment, you can run this command to destroy the resources:
+
+    terraform destroy
+
+### Testing your Deployment
+After the deployment is finished, you can access the Data Integration Workspace for the OCI Console.
+
+````
 
 ## Contributing
+This project is open source.  Please submit your contributions by forking this repository and submitting a pull request!  Oracle appreciates any contributions that are made by the open source community.
 
-*If your project has specific contribution requirements, update the CONTRIBUTING.md file to ensure those requirements are clearly explained*
-
-This project welcomes contributions from the community. Before submitting a pull request, please [review our contribution guide](./CONTRIBUTING.md)
-
-## Security
-
-Please consult the [security guide](./SECURITY.md) for our responsible security vulnerability disclosure process
+## Attribution & Credits
 
 ## License
+Copyright (c) 2022 Oracle and/or its affiliates.
 
-*The correct copyright notice format for both documentation and software is*
-    "Copyright (c) [year,] year Oracle and/or its affiliates."
-*You must include the year the content was first released (on any platform) and the most recent year in which it was revised*
+Licensed under the Universal Permissive License (UPL), Version 1.0.
 
-Copyright (c) 2023 Oracle and/or its affiliates.
-
-*Replace this statement if your project is not licensed under the UPL*
-
-Released under the Universal Permissive License v1.0 as shown at
-<https://oss.oracle.com/licenses/upl/>.
+See [LICENSE](LICENSE) for more details.
